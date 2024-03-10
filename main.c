@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <unistd.h> // for sbrk
 
@@ -86,20 +85,31 @@ word_t *alloc(size_t size) {
 }
 
 /*
- * Get block header given block's data
+ * Get block including header given block's data
  */
-Block *getHeader(word_t *data) {
+Block *getBlock(word_t *data) {
   // return (Block *)((char *)data + sizeof((Block *)0)->data - sizeof(Block));
   return (Block *)((char *)data + sizeof((Block *)0)->data - sizeof(Block));
 }
 
-int main() {
-  word_t *block1 = alloc(3);
-  Block *header = getHeader(block1);
+void freeBlock(word_t *data) {
+  Block *block = getBlock(data);
 
-  printf("Size of Block in Header: %zu\n", header->size);
-  printf("Size of word_t: %lu\n", sizeof(word_t));
-  assert(header->size == sizeof(word_t));
+  block->used = false;
+}
+
+int main() {
+  word_t *data1 = alloc(3);
+  Block *block1 = getBlock(data1);
+
+  assert(block1->size == sizeof(word_t));
+
+  word_t *data2 = alloc(10);
+  Block *block2 = getBlock(data2);
+  assert(block2->size == 16);
+
+  freeBlock(data2);
+  assert(block2->used == false);
 
   return 0;
 }
