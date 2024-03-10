@@ -94,17 +94,12 @@ Block *getHeader(word_t *data) {
 }
 
 int main() {
-  // size_t size = align(3);
-  // size_t size2 = align(14);
-  // printf("Aligned 3 bytes to %zu\n", size);
-  // printf("Aligned 14 bytes to %zu\n", size2);
-
-  word_t block1 = *alloc(3);
-  Block *header = getHeader(&block1);
+  word_t *block1 = alloc(3);
+  Block *header = getHeader(block1);
 
   printf("Size of Block in Header: %zu\n", header->size);
-  printf("Size of data in Block1: %lu\n", sizeof(block1));
-  // assert(header->size == sizeof(block1));
+  printf("Size of word_t: %lu\n", sizeof(word_t));
+  assert(header->size == sizeof(word_t));
 
   return 0;
 }
